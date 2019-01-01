@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>图像风格融合与快速迁移</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.qtip.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  </head>
+  <body>
+
+  <div id="test"></div>
+
+<div id="m_body">
+	<div  id="text">
+
+	</div>
+		<section id="main">
+
+			<h1>图像风格融合与快速迁移 </h1>
+
+			<article>
+
+			<h1>点击按钮 可以调节亮度、剪裁、拍照</h1>
+
+			<div id="webcam"></div>
+
+
+
+			</article>
+
+		</section>
+		<div  id="pictureBody" class="pictureBody">
+			<div class="file">
+				<input type="file" class="imgInput" id="imgInput">
+			</div>
+			<div id="StylePicture">
+
+			</div>
+			<button class="button">
+				下一步
+			</button>
+		</div>
+</div>
+<div id="loadding" class="m_hidden">
+			<div id="load"></div>
+	<img src="{{ url_for('static', filename='css/loadding.gif') }}"/>
+
+		</div>
+  </body>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/photobooth.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/qtip.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/gbin1.js') }}"></script>
+<script>
+
+
+
+$(".button").on("click",function(){
+    	var imgUrl=$("#text").html();
+        var url = window.document.location.href.toString();
+        var u = url.split("?")[1];
+        data=[];
+        var list=u.split("&");
+        for(var i=0;i<4;i++){
+            data[i]=list[i].split("=")[1];
+        }
+        data[4]="./app_img/"+$("#imgInput").val().split("C:\\fakepath\\")[1];
+        $( "#loadding" ).removeClass("m_hidden");
+        setTimeout(function(){
+             $.ajax({
+             type: "post",
+             url: "./filePath",
+             data:JSON.stringify(data),
+             dataType: "json",
+             contentType: 'application/json',
+             success: (data) => {
+
+             $( "#loadding" ).addClass("m_hidden");
+                    window.location.replace("/result");
+             },
+             error: (e) => {
+             $( "#loadding" ).addClass("m_hidden");
+                      window.location.replace("/hello");
+             }
+         });
+        },1000) ;
+});
+
+$(".imgInput").change(function(){
+    $('#StylePicture').empty();
+    var url=URL.createObjectURL($(this)[0].files[0]);
+    $( "#StylePicture" ).append( '<img src="' + url + '" >');
+});
+
+
+
+
+
+
+
+</script>
+
+</html>

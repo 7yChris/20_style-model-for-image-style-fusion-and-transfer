@@ -1,0 +1,47 @@
+
+#result>img{
+	width: 200px;
+	height: 300px;
+}
+#touxiang{
+width: 1000px;
+	height: auto;
+	background: #ffffff;
+}
+#touxiang>img{
+	margin: 10px 300px;
+	border: 1px solid red;
+}
+
+.result{
+width: 1000px;
+	height: auto;
+background: #ffffff;
+}
+
+#body{
+	width: 1100px;
+
+				margin: 10px auto;
+                padding:50px
+				background: #FFF;
+
+				color: #333;
+
+				background: #ffffff;
+
+				box-shadow: 0px 0px 10px #CCC;
+
+				padding:20px;
+
+				border-radius: 5px;
+}
+body{
+
+				font-size:12px;
+
+				background: #333;
+
+				font-family: 'Revalia', cursive, arial;
+
+			}

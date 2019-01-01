@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/start.css') }}">
+   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/start.js') }}"></script>
+
+</head>
+<body>
+<div class="name">图像风格融合与快速迁移</div>
+
+		<div class="div">
+             <div class="title">
+				请从下面选择4种风格
+        </div>
+			<div class="img_div" title="0">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="0"/>
+				<img  src="{{ url_for('static', filename='style/1.png') }}" class="img"/>
+			</div>
+			<div class="img_div" title="1">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="1" />
+				<img src="{{ url_for('static', filename='style/2.png') }}" class="img"/>
+			</div>
+			<div class="img_div" title="2">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"  title="2"/>
+				<img src="{{ url_for('static', filename='style/3.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="3">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="3"/>
+				<img src="{{ url_for('static', filename='style/4.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="4">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="4"/>
+				<img src="{{ url_for('static', filename='style/5.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="5">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="5"/>
+				<img src="{{ url_for('static', filename='style/6.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="6">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="6" />
+				<img src="{{ url_for('static', filename='style/7.png') }}" class="img"/>
+			</div>
+			<div class="img_div" title="7">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="7" />
+				<img src="{{ url_for('static', filename='style/8.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="8">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="8" />
+				<img src="{{ url_for('static', filename='style/9.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="9">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="9"/>
+				<img src="{{ url_for('static', filename='style/10.png') }}"  class="img"/>
+			</div>
+
+
+			<div class="img_div" title="10">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="10" />
+				<img src="{{ url_for('static', filename='style/11.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="11">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="11"/>
+				<img src="{{ url_for('static', filename='style/12.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="12">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="12" />
+				<img src="{{ url_for('static', filename='style/13.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="13">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="13"/>
+				<img src="{{ url_for('static', filename='style/14.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="14">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="14" />
+				<img src="{{ url_for('static', filename='style/15.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="15">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="15"/>
+				<img src="{{ url_for('static', filename='style/16.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="16">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="16" />
+				<img src="{{ url_for('static', filename='style/17.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="17">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="17"/>
+				<img src="{{ url_for('static', filename='style/18.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="18">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden"title="18" />
+				<img src="{{ url_for('static', filename='style/19.png') }}"  class="img"/>
+			</div>
+			<div class="img_div" title="19">
+				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="19"/>
+				<img src="{{ url_for('static', filename='style/20.png') }}"  class="img"/>
+			</div>
+
+		</div>
+		<button class="button" id="button">
+			下一步
+		</button>
+</body>
+<script>
+	(function(){
+				var count=0;
+				var list=new Array();
+				$(".img_div").on("click",function(){
+
+					var yes=$(this).find(".yes");
+					if(yes.hasClass("hidden")){
+						if(count==4){
+							alert("已经选择了4个风格的图片");
+							return;
+						}
+						count++;
+						yes.removeClass('hidden')
+					}else{
+						count--;
+						yes.addClass('hidden');
+					}
+
+				})
+				$("#button").on("click",function(){
+					if(count<4){
+						alert("请选择4种风格的图片");
+
+						return;
+
+					}
+					var list=$('.yes').not('.hidden');
+						for(var i=0;i<list.length;i++){
+
+						}
+						var a=list[0].title;
+						var b=list[1].title;
+						var c=list[2].title;
+						var d=list[3].title;
+						window.location.href="/index?a="+a+"&b="+b+"&c="+c+"&d="+d;
+
+				});
+			})();
+</script>
+</html>
