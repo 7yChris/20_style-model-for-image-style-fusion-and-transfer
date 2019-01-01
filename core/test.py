@@ -4,9 +4,9 @@ import tensorflow as tf  # 导入tensorflow模块
 import numpy as np  # 导入numpy模块
 from PIL import Image  # 导入PIL模块
 from PIL import ImageOps
-from forward import forward  # 导入前向网络模块
+from .forward import forward  # 导入前向网络模块
 import argparse  # 导入参数选择模块
-from generateds import center_crop_img
+from .generateds import center_crop_img
 
 # 设置参数
 parser = argparse.ArgumentParser()  # 定义一个参数设置器
@@ -22,7 +22,7 @@ parser.add_argument("--LABEL_4", type=int, default=19)  # 参数：风格4
 parser.add_argument("--LABELS_NUMS", type=int, default=20)  # 参数：风格数量
 parser.add_argument("--PATH_MODEL", type=str, default="./model/")  # 参数：模型存储路径
 parser.add_argument("--PATH_RESULTS", type=str, default="./results/")  # 参数：测试结果存储路径
-parser.add_argument("--PATH_STYLE", type=str, default="./style_imgs/") # 参数：风格图片路径
+parser.add_argument("--PATH_STYLE", type=str, default="./style_imgs/")  # 参数：风格图片路径
 parser.add_argument("--ALPHA1", type=float, default=0.25)  # 参数：Alpha1，风格权重，默认为0.25
 parser.add_argument("--ALPHA2", type=float, default=0.25)  # 参数：Alpha2，风格权重，默认为0.25
 parser.add_argument("--ALPHA3", type=float, default=0.25)  # 参数：Alpha3，风格权重，默认为0.25
@@ -46,13 +46,10 @@ class Stylizer(object):
         self.input_weight = None
         self.img25 = None
         self.img25_4 = None
-        self.global_step = 0
         saver = tf.train.Saver()  # 模型存储器定义
         ckpt = tf.train.get_checkpoint_state(stylizer_arg.PATH_MODEL)  # 从模型存储路径中获取模型
         if ckpt and ckpt.model_checkpoint_path:  # 从检查点中恢复模型
-            # 从检查点的路径名中分离出训练轮数
             saver.restore(self.sess, ckpt.model_checkpoint_path)
-            self.global_step = ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1]  # 获取训练步数
 
     def __del__(self):
         self.sess.close()
@@ -68,6 +65,7 @@ class Stylizer(object):
         self.img = np.array(img_input)
 
     def set_style(self):
+        # 将用户选取的4个风格存储在tuple中
         self.label_list = (self.stylizer_arg.LABEL_1, self.stylizer_arg.LABEL_2,
                            self.stylizer_arg.LABEL_3, self.stylizer_arg.LABEL_4)
 
@@ -185,12 +183,19 @@ class Stylizer(object):
 
 
 def get_image_matrix():
+    # 初始化
     stylizer0 = Stylizer(args)
+    # 读取图像文件
     stylizer0.read_image()
+    # 存储风格标签
     stylizer0.set_style()
+    # 生成融合图片
     stylizer0.generate_result()
+    # 保存融合图片
     stylizer0.save_result()
+    # 释放对象
     del stylizer0
+    # 重置图
     tf.reset_default_graph()
 
 
