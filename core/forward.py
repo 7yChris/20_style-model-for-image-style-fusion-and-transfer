@@ -251,8 +251,8 @@ def vggnet(inputs, vgg_path):
 """
 
 
-def get_content_loss(phi_content, phi_target):
-    return tf.nn.l2_loss(phi_content["conv2_2"] - phi_target["conv2_2"]) * 2 / tf.cast(tf.size(phi_content["conv2_2"]),
+def get_content_loss(content_img, target_img):
+    return tf.nn.l2_loss(content_img["conv2_2"] - target_img["conv2_2"]) * 2 / tf.cast(tf.size(content_img["conv2_2"]),
                                                                                        dtype=tf.float32)
 
 
@@ -268,18 +268,18 @@ phi_target: 一个tensor的字典，包含两个图经过vgg后的中间输出
 """
 
 
-def get_style_loss(phi_style, phi_target):
+def get_style_loss(style_img, target_img):
     # 声明一个字典
     layers = ["conv1_2", "conv2_2", "conv3_3", "conv4_3"]
     # 初始化loss
     loss = 0
     for layer in layers:
         # 取style_output
-        style_output = phi_style[layer]
-        style_gram = get_gram_matrix(style_output)
+        style_layer = style_img[layer]
+        style_gram = get_gram_matrix(style_layer)
         # 取target_output
-        target_output = phi_target[layer]
-        target_gram = get_gram_matrix(target_output)
+        target_layer = target_img[layer]
+        target_gram = get_gram_matrix(target_layer)
         # 计算mse
         loss += tf.nn.l2_loss(style_gram - target_gram) * 2 / tf.cast(tf.size(target_gram), dtype=tf.float32)
     return loss
