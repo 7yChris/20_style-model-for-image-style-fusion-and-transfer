@@ -1,11 +1,9 @@
 $(function(){
 
+
 	$('#webcam').photobooth().on("image",function( event, dataUrl ){
-		 $('#StylePicture').empty();
 
-		$( "#StylePicture" ).append( '<img src="' + dataUrl + '" >');
-
-
+		$( "#imgShow_WU_FILE" ).attr("src",dataUrl);
 		var url = window.document.location.href.toString();
         var u = url.split("?")[1];
         var dataMessage=new Array(6);
@@ -22,6 +20,7 @@ $(function(){
              url: "./photograph",
              data:JSON.stringify(dataMessage),
              dataType: "json",
+             async:false,
              contentType: 'application/json',
              success: (data) => {
 
@@ -80,6 +79,50 @@ $(function(){
 			classes: 'ui-tooltip-shadow ui-tooltip-jtools'
 		}
 	});
+
+	$(".imgInput").change(function(){
+
+        var url=URL.createObjectURL($(this)[0].files[0]);
+        $( "#imgShow_WU_FILE" ).attr("src",url);
+
+    });
+
+    $(".button").on("click",function(){
+            var ext=$("#imgInput").val().split("C:\\fakepath\\")[1].split(".")[1];
+            var imgShow_WU_FILE=document.getElementById("imgShow_WU_FILE");
+            var imgdatabase64=getImageBase64(imgShow_WU_FILE,ext);
+            var imgUrl=$("#text").html();
+             var url = window.document.location.href.toString();
+            var u = url.split("?")[1];
+            var data=[];
+            var list=u.split("&");
+            for(var i=0;i<4;i++){
+                data[i]=list[i].split("=")[1];
+            }
+
+            data[4]=imgdatabase64;
+            $( "#loadding" ).removeClass("m_hidden");
+            setTimeout(function(){
+                 $.ajax({
+                 type: "post",
+                 url: "./filePath",
+                 async:false,
+                 data:JSON.stringify(data),
+                 dataType: "json",
+
+                 contentType: 'application/json',
+                 success: (data) => {
+
+                 $( "#loadding" ).addClass("m_hidden");
+                        window.location.replace("/result");
+                 },
+                 error: (e) => {
+                 $( "#loadding" ).addClass("m_hidden");
+                          window.location.replace("/hello");
+                 }
+             });
+            },1000) ;
+    });
 });
 
 

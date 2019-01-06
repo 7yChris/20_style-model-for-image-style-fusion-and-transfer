@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/start.css') }}">
-   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+   	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/start.js') }}"></script>
 
 </head>
 <body>
-<div class="name">图像风格融合与快速迁移</div>
-
+		<div class="name">风格融合与快速迁移</div>
 		<div class="div">
              <div class="title">
-				请从下面选择4种风格
+				请选择4种风格的图片
         </div>
 			<div class="img_div" title="0">
 				<img src="{{ url_for('static', filename='style/great.png') }}" alt="" class="yes hidden" title="0"/>
@@ -104,42 +103,35 @@
 </body>
 <script>
 	(function(){
-				var count=0;
-				var list=new Array();
-				$(".img_div").on("click",function(){
+		var count=0;
+		var list=new Array();
+		$(".img_div").on("click",function(){
+			var yes=$(this).find(".yes");
+			if(yes.hasClass("hidden")){
+				if(count==4){
+					alert("已经选择了4个风格的图片");
+					return;
+				}
+				count++;
+				yes.removeClass('hidden')
+			}else{
+				count--;
+				yes.addClass('hidden');
+			}
+		})
 
-					var yes=$(this).find(".yes");
-					if(yes.hasClass("hidden")){
-						if(count==4){
-							alert("已经选择了4个风格的图片");
-							return;
-						}
-						count++;
-						yes.removeClass('hidden')
-					}else{
-						count--;
-						yes.addClass('hidden');
-					}
-
-				})
-				$("#button").on("click",function(){
-					if(count<4){
-						alert("请选择4种风格的图片");
-
-						return;
-
-					}
-					var list=$('.yes').not('.hidden');
-						for(var i=0;i<list.length;i++){
-
-						}
-						var a=list[0].title;
-						var b=list[1].title;
-						var c=list[2].title;
-						var d=list[3].title;
-						window.location.href="/index?a="+a+"&b="+b+"&c="+c+"&d="+d;
-
-				});
-			})();
+		$("#button").on("click",function(){
+			if(count<4){
+				alert("请选择4种风格的图片");
+				return;
+			}
+			var list=$('.yes').not('.hidden');
+			var a=list[0].title;
+			var b=list[1].title;
+			var c=list[2].title;
+			var d=list[3].title;
+			window.location.href="/index?a="+a+"&b="+b+"&c="+c+"&d="+d;
+		});
+	})();
 </script>
 </html>
