@@ -1,16 +1,21 @@
 from flask import Flask, jsonify, render_template, request
 from core import app as model
-
+import random
 import os
 import base64
+import argparse
 
-# for windows
-# HOST = '127.0.0.3'
-
-# for mac
-HOST = '127.0.0.1'
+parser = argparse.ArgumentParser()  # 定义一个参数设置器
+# 固定参数
+parser.add_argument("--HOST", type=str, default='127.0.0.1')
+parser.add_argument("--PATH_RESULTS", type=str, default="./static/results/")
+parser.add_argument("--PATH_DATA", type=str, default="./static/data/")
+parser.add_argument("--PATH_MODEL", type=str, default="./core/model/")
+parser.add_argument("--PATH_STYLE", type=str, default="./core/style_imgs/")
+args = parser.parse_args()  # 定义参数集合args
 
 app = Flask(__name__)
+
 
 @app.route("/api/getPicture", methods=['post'])
 def getPicture():
@@ -36,12 +41,20 @@ def del_file(path):
             os.remove(c_path)
 
 
-@app.route("/filePath", methods=['post', 'get'])
+@app.route("/filePath", methods=['post'])
 def filePath():
     data = request.json
-
+    imgurl = data[4]
+    dataPath = imgurl[22:]
+    imagedata = base64.b64decode(dataPath)
+    if (os.path.exists(args.PATH_DATA + 'picture.jpg')):
+        os.remove(args.PATH_DATA + 'picture.jpg')
+    file = open(args.PATH_DATA + 'picture.jpg', "wb")
+    file.write(imagedata)
+    file.close()
+    data[4] = args.PATH_DATA + 'picture.jpg'
     print(data)
-    model.main(int(data[0]), int(data[1]), int(data[2]), int(data[3]), data[4])
+    model.main(data, args.PATH_RESULTS, args.PATH_DATA, args.PATH_STYLE, args.PATH_MODEL)
     imgPath = [1]
     return jsonify(results=[imgPath])
 
@@ -53,13 +66,13 @@ def photograph():
     imgurl = data[5]
     dataPath = imgurl[22:]
     imagedata = base64.b64decode(dataPath)
-    if (os.path.exists('./static/data/touxiang.jpg')):
-        os.remove("./static/data/touxiang.jpg")
-    file = open('./static/data/touxiang.jpg', "wb")
+    if (os.path.exists(args.PATH_DATA + 'touxiang.jpg')):
+        os.remove(args.PATH_DATA + 'touxiang.jpg')
+    file = open(args.PATH_DATA + 'touxiang.jpg', 'wb')
     file.write(imagedata)
     file.close()
-    data[4] = './static/data/touxiang.jpg'
-    model.main(int(data[0]), int(data[1]), int(data[2]), int(data[3]), './static/data/touxiang.jpg')
+    data[4] = args.PATH_DATA + 'touxiang.jpg'
+    model.main(data, args.PATH_RESULTS, args.PATH_DATA, args.PATH_STYLE, args.PATH_MODEL)
     imgPath = [1]
     return jsonify(results=[imgPath])
 
@@ -82,24 +95,24 @@ def main():
 
 
 def getPath():
-    path = "./static/data/"
+    path = args.PATH_DATA
     ls = os.listdir(path)
     for i in ls:
         c_path = os.path.join(path, i)
-        if ("jpg" in c_path):
-            url = "http://127.0.0.1:5000" + c_path[1:]
+        if ("result" in c_path):
+            url = "http://"+args.HOST+":5000" + c_path[1:]
             print(url)
             return url
 
 
 def getResultPath():
-    path = "./static/results/"
+    path = args.PATH_RESULTS
     ls = os.listdir(path)
     url = []
     for i in ls:
         c_path = os.path.join(path, i)
         if ("jpg" in c_path):
-            url.append("http://"+HOST+":5000" + c_path[1:])
+            url.append("http://"+args.HOST+":5000" + c_path[1:])
     return url
 
 
@@ -110,4 +123,4 @@ def hello():
 
 if __name__ == "__main__":
     app.debug = False
-    app.run(host=HOST)
+    app.run()
