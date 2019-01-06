@@ -117,10 +117,14 @@ return: the normalized, scaled, offset tensor.
 
 def conditional_normalization(x, scope_bn, weight=None):
     # 获取beta、gamma参数变量
-    beta_matrix = tf.get_variable(name=scope_bn + 'beta', shape=[weight.shape[-1], x.shape[-1]],
-                                  initializer=tf.constant_initializer([0.]), trainable=True)  # label_nums x C
-    gamma_matrix = tf.get_variable(name=scope_bn + 'gamma', shape=[weight.shape[-1], x.shape[-1]],
-                                   initializer=tf.constant_initializer([1.]), trainable=True)  # label_nums x C
+    beta_matrix = tf.get_variable(name=scope_bn + 'beta',
+                                  shape=[weight.shape[-1], x.shape[-1]],
+                                  initializer=tf.constant_initializer([0.]),
+                                  trainable=True)  # label_nums x C
+    gamma_matrix = tf.get_variable(name=scope_bn + 'gamma',
+                                   shape=[weight.shape[-1], x.shape[-1]],
+                                   initializer=tf.constant_initializer([1.]),
+                                   trainable=True)  # label_nums x C
 
     # 根据输入权重获取instance normalization beta、gamma值
     # 在train过程当中weight为one hot编码用于抽取当前训练风格beta、gamma

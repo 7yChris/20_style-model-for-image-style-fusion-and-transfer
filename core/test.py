@@ -4,19 +4,20 @@ import tensorflow as tf  # 导入tensorflow模块
 import numpy as np  # 导入numpy模块
 from PIL import Image  # 导入PIL模块
 from PIL import ImageOps
-from .forward import forward  # 导入前向网络模块
+from forward import forward  # 导入前向网络模块
 import argparse  # 导入参数选择模块
-from .generateds import center_crop_img
+from generateds import center_crop_img
+import random
 
 # 设置参数
 parser = argparse.ArgumentParser()  # 定义一个参数设置器
 
 # 修改以下5个参数以开启训练
-parser.add_argument("--PATH_IMG", type=str, default="./test_imgs/ruanwei1.jpeg")  # 参数：选择测试图像
-parser.add_argument("--LABEL_1", type=int, default=2)  # 参数：风格1
-parser.add_argument("--LABEL_2", type=int, default=8)  # 参数：风格2
-parser.add_argument("--LABEL_3", type=int, default=10)  # 参数：风格3
-parser.add_argument("--LABEL_4", type=int, default=19)  # 参数：风格4
+parser.add_argument("--PATH_IMG", type=str, default="./test_imgs/ruanwei.jpeg")  # 参数：选择测试图像
+parser.add_argument("--LABEL_1", type=int, default=0)  # 参数：风格1
+parser.add_argument("--LABEL_2", type=int, default=1)  # 参数：风格2
+parser.add_argument("--LABEL_3", type=int, default=2)  # 参数：风格3
+parser.add_argument("--LABEL_4", type=int, default=3)  # 参数：风格4
 
 # 固定参数
 parser.add_argument("--LABELS_NUMS", type=int, default=20)  # 参数：风格数量
@@ -38,15 +39,16 @@ class Stylizer(object):
         self.content = tf.placeholder(tf.float32, [1, None, None, 3])  # 图片输入定义
         self.weight = tf.placeholder(tf.float32, [1, stylizer_arg.LABELS_NUMS])  # 风格权重向量，用于存储用户选择的风格
         self.target = forward(self.content, self.weight)  # 定义将要生成的图片
-        self.sess = tf.Session()  # 定义一个sess
-        self.sess.run(tf.global_variables_initializer())  # 模型初始化
         self.img_path = stylizer_arg.PATH_IMG
         self.img = None
         self.label_list = None
         self.input_weight = None
         self.img25 = None
         self.img25_4 = None
-        saver = tf.train.Saver()  # 模型存储器定义
+
+        self.sess = tf.Session()  # 定义一个sess
+        self.sess.run(tf.global_variables_initializer())  # 变量初始化
+        saver = tf.train.Saver()  # 定义模型saver
         ckpt = tf.train.get_checkpoint_state(stylizer_arg.PATH_MODEL)  # 从模型存储路径中获取模型
         if ckpt and ckpt.model_checkpoint_path:  # 从检查点中恢复模型
             saver.restore(self.sess, ckpt.model_checkpoint_path)
@@ -56,7 +58,7 @@ class Stylizer(object):
 
     def read_image(self):
         # 读取图像
-        img_input = Image.open(self.img_path)
+        img_input = Image.open(self.img_path).convert('RGB')
         # 不断对图片进行缩小，直到符合尺寸限制
         # 若图片太大，生成速度将会非常慢，若需生成原图，可将此段注释掉
         while img_input.width * img_input.height > 500000:
@@ -88,16 +90,9 @@ class Stylizer(object):
                             feed_dict={self.content: self.img[np.newaxis, :, :, :], self.weight: self.input_weight})
         # 保存单张图片
         # 直接str(tuple)会产生空格，js无法读取
-        Image.fromarray(np.uint8(img[0, :, :, :])).save(
-            self.stylizer_arg.PATH_RESULTS + self.img_path.split('/')[-1].split('.')[0] + '_' + '(' +
-            str(self.label_list[0]) + ',' +
-            str(self.label_list[1]) + ',' +
-            str(self.label_list[2]) + ',' +
-            str(self.label_list[3]) + ',' + ')' + '_' + '(' +
-            str(alpha_list[0]) + ',' +
-            str(alpha_list[1]) + ',' +
-            str(alpha_list[2]) + ',' +
-            str(alpha_list[3]) + ',' + ')' + '.jpg')
+        file_name = self.stylizer_arg.PATH_RESULTS + self.img_path.split('/')[-1].split('.')[0] + '_' + str(self.label_list) + '_' + str(alpha_list) + '.jpg'
+        file_name = file_name.replace(' ','')
+        Image.fromarray(np.uint8(img[0, :, :, :])).save(file_name)
         return img
 
     def generate_result(self):
@@ -202,7 +197,6 @@ def get_image_matrix():
 # 主程序
 def main():
     get_image_matrix()
-
 
 # 主程序入口
 if __name__ == '__main__':

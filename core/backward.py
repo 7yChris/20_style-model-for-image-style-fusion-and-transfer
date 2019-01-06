@@ -58,18 +58,18 @@ def backward(img_h=args.IMG_H, img_w=args.IMG_W, img_c=args.IMG_C, style_h=args.
     style = tf.placeholder(tf.float32, [batch_size, style_h, style_w, img_c])
     # 风格1：训练风格的标签
     weight = tf.placeholder(tf.float32, [1, c_nums])
-
     # 图像生成网络：前向传播
     target = forward(content, weight)
+
     # 生成图像、内容图像、风格图像特征提取
-    Phi_T = vggnet(target, vgg_path)
-    Phi_C = vggnet(content, vgg_path)
-    Phi_S = vggnet(style, vgg_path)
+    vgg_target = vggnet(target, vgg_path)
+    vgg_content = vggnet(content, vgg_path)
+    vgg_style = vggnet(style, vgg_path)
     # Loss计算
     # 内容Loss
-    content_loss = get_content_loss(Phi_C, Phi_T)
+    content_loss = get_content_loss(vgg_content, vgg_target)
     # 风格Loss
-    style_loss = get_style_loss(Phi_S, Phi_T)
+    style_loss = get_style_loss(vgg_style, vgg_target)
     # 总Loss
     loss = content_loss * content_weight + style_loss * style_weight
 
