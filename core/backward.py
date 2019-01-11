@@ -110,8 +110,7 @@ def backward(img_h=args.IMG_H, img_w=args.IMG_W, img_c=args.IMG_C, style_h=args.
             # 计时
             time_step_start = time.time()
 
-            # 随机读取batch_size张内容图片，存储在四维矩阵中（batch_size*h*w*c）
-            # batch_content = random_batch(path_content, batch_size, [IMG_H, IMG_W, IMG_C])
+            # 读取tfrecords训练集，并进行reshape，尺寸为(batch_size*h*w*c)
             batch_content = sess.run(content_batch)
             batch_content = np.reshape(batch_content, [batch_size, img_w, img_h, img_c])
             # 随机选择1个风格图片，并返回风格图片存储矩阵（batch_size*h*w*c，每个h*w*c都相同），y_labels为风格标签
