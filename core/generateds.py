@@ -123,6 +123,7 @@ def center_crop_img(img):
 def random_select_style(path, batch_size, shape, c_nums):
     # 列出风格图片文件名
     filenames = os.listdir(path)
+    filenames = [i for i in filenames if i[-3:] == 'png']
     # 随机选出一张风格图片
     rand_sample = np.random.randint(0, len(filenames))
     # 读取风格图片，并进行裁剪、resize

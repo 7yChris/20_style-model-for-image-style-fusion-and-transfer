@@ -30,8 +30,6 @@ parser.add_argument("--LEARNING_RATE", type=float, default=0.001)
 # 内容权重和风格权重
 parser.add_argument("--CONTENT_WEIGHT", type=float, default=1.0)
 parser.add_argument("--STYLE_WEIGHT", type=float, default=5.0)
-# 训练内容图像路径，train2014
-parser.add_argument("--PATH_CONTENT", type=str, default="./MSCOCO/")
 # 风格图像路径
 parser.add_argument("--PATH_STYLE", type=str, default="./style_imgs/")
 # 生成模型路径
@@ -121,26 +119,26 @@ def backward(img_h=args.IMG_H, img_w=args.IMG_W, img_c=args.IMG_C, style_h=args.
             step = sess.run(global_step)
 
             # 打印相关信息
-            if itr % 500 == 0:
+            if itr % 100 == 0:
                 # 为之后打印信息进行相关计算
-                [loss, target, content_loss_res, style_loss_res] = sess.run([loss, target, content_loss, style_loss],
+                [loss_p, target_p, content_loss_res, style_loss_res] = sess.run([loss, target, content_loss, style_loss],
                                                                             feed_dict={content: batch_content,
                                                                                        style: batch_style,
                                                                                        weight: y_labels})
                 # 连接3张图片（内容图片、风格图片、生成图片）
                 save_img = np.concatenate((batch_content[0, :, :, :],
                                            misc.imresize(batch_style[0, :, :, :], [img_h, img_w]),
-                                           target[0, :, :, :]), axis=1)
+                                           target_p[0, :, :, :]), axis=1)
                 # 打印轮数、总loss、内容loss、风格loss
                 print("Iteration: %d, Loss: %e, Content_loss: %e, Style_loss: %e" %
-                      (step, loss, content_loss_res, style_loss_res))
+                      (step, loss_p, content_loss_res, style_loss_res))
                 # 展示训练效果：打印3张图片，内容图+风格图+风格迁移图
                 Image.fromarray(np.uint8(save_img)).save(
                     "save_training_imgs/" + str(step) + "_" + str(np.argmax(y_labels[0, :])) + ".jpg")
 
             time_step_stop = time.time()
             # 存储模型
-            a = 500
+            a = 200
             if itr % a == 0:
                 saver.save(sess, model_path + "model", global_step=global_step)
                 print('Iteration: %d, Save Model Successfully, single step time = %.2fs, total time = %.2fs' % (
