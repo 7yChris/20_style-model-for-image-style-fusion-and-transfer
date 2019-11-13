@@ -6,7 +6,8 @@ Simple implementation of the paper "A Learned Representation for Artistic Style"
 
 github地址：<br>
 https://github.com/7yChris/20_style-model-for-image-style-fusion-and-transfer.git <br>
-之后将会持续更新和完善
+
+该项目已从2019年起停止维护
 
 ## Instruction
 ### 一、core文件夹
